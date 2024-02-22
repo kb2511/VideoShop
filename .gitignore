@@ -1,0 +1,11 @@
+*/.vs
+.*
+!.gitignore
+*.dbmdl
+*.jfm
+obj/*
+bin/*
+obj
+bin
+
+
