@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 
-namespace WebShopAlgebra.Models
+namespace WebShopModels.Models
 {
     public class Category
     {

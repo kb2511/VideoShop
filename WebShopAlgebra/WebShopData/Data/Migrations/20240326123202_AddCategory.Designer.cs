@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WebShopAlgebra.Data;
+using WebShopData.Data;
 
 #nullable disable
 
-namespace WebShopAlgebra.Data.Migrations
+namespace WebShopData.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20240326123202_AddCategory")]

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using WebShopAlgebra.Models;
+using WebShopModels;
 
-namespace WebShopAlgebra.Data
+namespace WebShopData.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {

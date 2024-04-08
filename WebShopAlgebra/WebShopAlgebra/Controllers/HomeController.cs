@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using WebShopAlgebra.Models;
+using WebShopModels;
 
 namespace WebShopAlgebra.Controllers
 {

@@ -4,7 +4,7 @@
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace WebShopAlgebra.Data.Migrations
+namespace WebShopData.Data.Migrations
 {
     /// <inheritdoc />
     public partial class AddCategory : Migration
