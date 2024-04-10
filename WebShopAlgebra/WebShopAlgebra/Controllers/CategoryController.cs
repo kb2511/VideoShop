@@ -6,23 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebShopData.Data;
+using WebShopData.Interfaces;
 using WebShopModels;
 
 namespace WebShopAlgebra.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(ApplicationDbContext context)
+        public CategoryController(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         // GET: Category
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Category.ToListAsync());
+            var result = await _categoryService.GetAll();
+            return View(result);
         }
 
         // GET: Category/Create
@@ -40,11 +42,11 @@ namespace WebShopAlgebra.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                await _categoryService.Create(category);
                 TempData["Success"] = "Category created successfully!";
                 return RedirectToAction(nameof(Index));
             }
+                        
             return View(category);
         }
 
@@ -56,7 +58,7 @@ namespace WebShopAlgebra.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Category.FindAsync(id);
+            var category = await _categoryService.Get(c => c.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -80,13 +82,13 @@ namespace WebShopAlgebra.Controllers
             {
                 try
                 {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
+                    await _categoryService.Update(category);
                     TempData["Success"] = "Category updated successfully!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
+                    bool categoryExists = await CategoryExists(category.Id);
+                    if (!categoryExists)
                     {
                         return NotFound();
                     }
@@ -108,8 +110,7 @@ namespace WebShopAlgebra.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Category
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryService.Get(c => c.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -123,20 +124,26 @@ namespace WebShopAlgebra.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Category.FindAsync(id);
+            var category = await _categoryService.Get(c => c.Id == id);
             if (category != null)
             {
-                _context.Category.Remove(category);
+                await _categoryService.Delete(category);
             }
 
-            await _context.SaveChangesAsync();
             TempData["Success"] = "Category deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private async Task<bool> CategoryExists(int id)
         {
-            return _context.Category.Any(e => e.Id == id);
+            var category = await _categoryService.Get(c => c.Id == id);
+
+            if(category != null)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
