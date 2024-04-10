@@ -16,7 +16,7 @@ namespace WebShopData.Services
 
         public async Task Update(Category category)
         {
-            _context.Update(category);
+            _context.Category.Update(category);
             await _context.SaveChangesAsync();
         }
     }

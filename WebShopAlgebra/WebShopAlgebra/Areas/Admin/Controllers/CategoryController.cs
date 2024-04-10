@@ -9,8 +9,9 @@ using WebShopData.Data;
 using WebShopData.Interfaces;
 using WebShopModels;
 
-namespace WebShopAlgebra.Controllers
+namespace WebShopAlgebra.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -46,7 +47,7 @@ namespace WebShopAlgebra.Controllers
                 TempData["Success"] = "Category created successfully!";
                 return RedirectToAction(nameof(Index));
             }
-                        
+
             return View(category);
         }
 
@@ -138,7 +139,7 @@ namespace WebShopAlgebra.Controllers
         {
             var category = await _categoryService.Get(c => c.Id == id);
 
-            if(category != null)
+            if (category != null)
             {
                 return true;
             }
