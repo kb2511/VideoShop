@@ -37,7 +37,8 @@ namespace WebShopData.Data
                     ListPrice = 10,
                     Price = 9,
                     PriceMoreThen3 = 8,
-                    PriceMoreThen10 = 7
+                    PriceMoreThen10 = 7,
+                    CategoryId = 1
                 },
                 new Product 
                 { 
@@ -49,7 +50,8 @@ namespace WebShopData.Data
                     ListPrice = 23,
                     Price = 20,
                     PriceMoreThen3 = 18,
-                    PriceMoreThen10 = 16
+                    PriceMoreThen10 = 16,
+                    CategoryId = 1
                 },
                 new Product 
                 { 
@@ -61,7 +63,8 @@ namespace WebShopData.Data
                     ListPrice = 19,
                     Price = 15,
                     PriceMoreThen3 = 13,
-                    PriceMoreThen10 = 11
+                    PriceMoreThen10 = 11,
+                    CategoryId = 2
                 },
                 new Product
                 {
@@ -73,7 +76,8 @@ namespace WebShopData.Data
                     ListPrice = 26,
                     Price = 25,
                     PriceMoreThen3 = 20,
-                    PriceMoreThen10 = 18
+                    PriceMoreThen10 = 18,
+                    CategoryId = 2
                 },
                 new Product
                 {
@@ -85,7 +89,8 @@ namespace WebShopData.Data
                     ListPrice = 40,
                     Price = 35,
                     PriceMoreThen3 = 30,
-                    PriceMoreThen10 = 25
+                    PriceMoreThen10 = 25,
+                    CategoryId = 3
                 }
                 );
         }

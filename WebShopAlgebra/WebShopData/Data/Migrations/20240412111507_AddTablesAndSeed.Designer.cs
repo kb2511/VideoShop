@@ -12,8 +12,8 @@ using WebShopData.Data;
 namespace WebShopData.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240326123202_AddCategory")]
-    partial class AddCategory
+    [Migration("20240412111507_AddTablesAndSeed")]
+    partial class AddTablesAndSeed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -227,7 +227,7 @@ namespace WebShopData.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("WebShopAlgebra.Models.Category", b =>
+            modelBuilder.Entity("WebShopModels.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -259,6 +259,116 @@ namespace WebShopData.Data.Migrations
                         {
                             Id = 3,
                             Name = "Documentary"
+                        });
+                });
+
+            modelBuilder.Entity("WebShopModels.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<double>("ListPrice")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PriceMoreThen10")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PriceMoreThen3")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("YearOfRelease")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Product");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            Description = "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
+                            Duration = 142,
+                            ListPrice = 10.0,
+                            Price = 9.0,
+                            PriceMoreThen10 = 7.0,
+                            PriceMoreThen3 = 8.0,
+                            Title = "The Shawshank Redemption",
+                            YearOfRelease = 1994
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 1,
+                            Description = "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
+                            Duration = 155,
+                            ListPrice = 23.0,
+                            Price = 20.0,
+                            PriceMoreThen10 = 16.0,
+                            PriceMoreThen3 = 18.0,
+                            Title = "The Godfather",
+                            YearOfRelease = 1972
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 2,
+                            Description = "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+                            Duration = 152,
+                            ListPrice = 19.0,
+                            Price = 15.0,
+                            PriceMoreThen10 = 11.0,
+                            PriceMoreThen3 = 13.0,
+                            Title = "The Dark Knight",
+                            YearOfRelease = 2008
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 2,
+                            Description = "A young F.B.I. cadet must receive the help of an incarcerated and manipulative cannibal killer to help catch another serial killer, a madman who skins his victims.",
+                            Duration = 118,
+                            ListPrice = 26.0,
+                            Price = 25.0,
+                            PriceMoreThen10 = 18.0,
+                            PriceMoreThen3 = 20.0,
+                            Title = "The Silence of the Lambs",
+                            YearOfRelease = 1991
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 3,
+                            Description = "Gandalf and Aragorn lead the World of Men against Sauron's army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.",
+                            Duration = 201,
+                            ListPrice = 40.0,
+                            Price = 35.0,
+                            PriceMoreThen10 = 25.0,
+                            PriceMoreThen3 = 30.0,
+                            Title = "The Lord of the Rings: The Return of the King",
+                            YearOfRelease = 2003
                         });
                 });
 
@@ -311,6 +421,17 @@ namespace WebShopData.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WebShopModels.Product", b =>
+                {
+                    b.HasOne("WebShopModels.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }

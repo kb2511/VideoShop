@@ -167,10 +167,12 @@ namespace WebShopData.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -207,10 +209,12 @@ namespace WebShopData.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -263,6 +267,9 @@ namespace WebShopData.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -290,12 +297,15 @@ namespace WebShopData.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Product");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
+                            CategoryId = 1,
                             Description = "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
                             Duration = 142,
                             ListPrice = 10.0,
@@ -308,6 +318,7 @@ namespace WebShopData.Data.Migrations
                         new
                         {
                             Id = 2,
+                            CategoryId = 1,
                             Description = "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
                             Duration = 155,
                             ListPrice = 23.0,
@@ -320,6 +331,7 @@ namespace WebShopData.Data.Migrations
                         new
                         {
                             Id = 3,
+                            CategoryId = 2,
                             Description = "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
                             Duration = 152,
                             ListPrice = 19.0,
@@ -332,6 +344,7 @@ namespace WebShopData.Data.Migrations
                         new
                         {
                             Id = 4,
+                            CategoryId = 2,
                             Description = "A young F.B.I. cadet must receive the help of an incarcerated and manipulative cannibal killer to help catch another serial killer, a madman who skins his victims.",
                             Duration = 118,
                             ListPrice = 26.0,
@@ -344,6 +357,7 @@ namespace WebShopData.Data.Migrations
                         new
                         {
                             Id = 5,
+                            CategoryId = 3,
                             Description = "Gandalf and Aragorn lead the World of Men against Sauron's army to draw his gaze from Frodo and Sam as they approach Mount Doom with the One Ring.",
                             Duration = 201,
                             ListPrice = 40.0,
@@ -404,6 +418,17 @@ namespace WebShopData.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WebShopModels.Product", b =>
+                {
+                    b.HasOne("WebShopModels.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }
