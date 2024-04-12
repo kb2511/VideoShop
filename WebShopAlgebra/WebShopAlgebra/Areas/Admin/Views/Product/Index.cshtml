@@ -38,7 +38,7 @@
             </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model.OrderBy(p => p.Id))
+        @foreach (var item in Model)
         {
             <tr>
                 <td>
@@ -51,7 +51,7 @@
                     @Html.DisplayFor(modelItem => item.YearOfRelease)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Price)
+                    @Html.DisplayFor(modelItem => item.ListPrice)
                 </td>
                 <td class="text-center">
                     <div class="w-75 btn-group" role="group">
