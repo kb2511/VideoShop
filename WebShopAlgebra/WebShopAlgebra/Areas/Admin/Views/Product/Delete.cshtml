@@ -1,0 +1,41 @@
+﻿@model WebShopModels.Product
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="container">
+    <form asp-action="Delete">
+        <input asp-for="Id" hidden />
+        <div class="border p-3 mt-4">
+            <div class="row pb-2">
+                <h2 class="text-primary">Are you sure you want to delete this?</h2>
+                <hr />
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" disabled class="form-control" />
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" disabled class="form-control" />
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Duration" class="control-label"></label>
+                <input asp-for="Duration" disabled class="form-control" />
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="YearOfRelease" class="control-label"></label>
+                <input asp-for="YearOfRelease" disabled class="form-control" />
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" disabled class="form-control" />
+            </div>
+            <div class="form-group mb-3">
+                <input type="submit" value="Delete" class="btn btn-danger" style="width:150px" />
+                <a asp-controller="Category" asp-action="Index" class="btn btn-secondary" style="width:150px">Back to List</a>
+            </div>
+        </div>
+    </form>
+</div>
