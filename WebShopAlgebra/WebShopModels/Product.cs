@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -43,7 +44,12 @@ namespace WebShopModels
         public double PriceMoreThen10 { get; set; }
  
         public int CategoryId { get; set; }
+
         [ForeignKey(nameof(CategoryId))]
+        [ValidateNever]
         public Category Category { get; set; }
+
+        [ValidateNever]
+        public string ImageUrl { get; set; }
     }
 }

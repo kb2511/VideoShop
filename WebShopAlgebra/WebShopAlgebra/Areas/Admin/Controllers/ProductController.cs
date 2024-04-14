@@ -9,6 +9,7 @@ using WebShopData.Data;
 using WebShopData.Interfaces;
 using WebShopData.Services;
 using WebShopModels;
+using WebShopModels.ViewModels;
 
 namespace WebShopAlgebra.Areas.Admin.Controllers
 {
@@ -16,23 +17,39 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, ICategoryService categoryService)
         {
             _productService = productService;
+            _categoryService = categoryService;
         }
 
         // GET: Admin/Product
         public async Task<IActionResult> Index()
         {
-            var result = await _productService.GetAll();
-            return View(result);
+            var products = await _productService.GetAll();
+
+            return View(products);
         }
 
         // GET: Admin/Product/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var allCategories = await _categoryService.GetAll();
+
+            ProductVM productVM = new ProductVM()
+            {
+                CategoryList = allCategories.Select(c =>
+                                new SelectListItem()
+                                {
+                                    Text = c.Name,
+                                    Value = c.Id.ToString()
+                                }),
+                Product = new Product()
+            };
+
+            return View(productVM);
         }
 
         // POST: Admin/Product/Create
@@ -40,15 +57,23 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Duration,YearOfRelease,ListPrice,Price,PriceMoreThen3,PriceMoreThen10")] Product product)
+        public async Task<IActionResult> Create([Bind("Product,CategoryList")] ProductVM productVM)
         {
             if (ModelState.IsValid)
             {
-                await _productService.Create(product);
+                await _productService.Create(productVM.Product);
                 TempData["Success"] = "Product created successfully!";
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+
+            var allCategories = await _categoryService.GetAll();
+            productVM.CategoryList = allCategories.Select(c => 
+            new SelectListItem()
+            {
+                Text = c.Name,
+                Value = c.Id.ToString()
+            });
+            return View(productVM);
         }
 
         // GET: Admin/Product/Edit/5

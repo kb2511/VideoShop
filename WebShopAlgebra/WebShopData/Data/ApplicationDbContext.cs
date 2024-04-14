@@ -27,9 +27,9 @@ namespace WebShopData.Data
                 );
 
             modelBuilder.Entity<Product>().HasData(
-                new Product 
-                { 
-                    Id = 1, 
+                new Product
+                {
+                    Id = 1,
                     Title = "The Shawshank Redemption",
                     Description = "Over the course of several years, two convicts form a friendship, seeking consolation and, eventually, redemption through basic compassion.",
                     Duration = 142,
@@ -38,11 +38,12 @@ namespace WebShopData.Data
                     Price = 9,
                     PriceMoreThen3 = 8,
                     PriceMoreThen10 = 7,
-                    CategoryId = 1
+                    CategoryId = 1,
+                    ImageUrl = ""
                 },
-                new Product 
-                { 
-                    Id = 2, 
+                new Product
+                {
+                    Id = 2,
                     Title = "The Godfather",
                     Description = "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
                     Duration = 155,
@@ -51,11 +52,12 @@ namespace WebShopData.Data
                     Price = 20,
                     PriceMoreThen3 = 18,
                     PriceMoreThen10 = 16,
-                    CategoryId = 1
+                    CategoryId = 1,
+                    ImageUrl = ""
                 },
-                new Product 
-                { 
-                    Id = 3, 
+                new Product
+                {
+                    Id = 3,
                     Title = "The Dark Knight",
                     Description = "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
                     Duration = 152,
@@ -64,7 +66,8 @@ namespace WebShopData.Data
                     Price = 15,
                     PriceMoreThen3 = 13,
                     PriceMoreThen10 = 11,
-                    CategoryId = 2
+                    CategoryId = 2,
+                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -77,7 +80,8 @@ namespace WebShopData.Data
                     Price = 25,
                     PriceMoreThen3 = 20,
                     PriceMoreThen10 = 18,
-                    CategoryId = 2
+                    CategoryId = 2,
+                    ImageUrl = ""
                 },
                 new Product
                 {
@@ -90,7 +94,8 @@ namespace WebShopData.Data
                     Price = 35,
                     PriceMoreThen3 = 30,
                     PriceMoreThen10 = 25,
-                    CategoryId = 3
+                    CategoryId = 3,
+                    ImageUrl = ""
                 }
                 );
         }

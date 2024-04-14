@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShopAlgebra", "WebShopAl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebShopData", "WebShopData\WebShopData.csproj", "{8D8762A4-15AC-437B-95EB-3C6B268F7154}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebShopModels", "WebShopModels1\WebShopModels.csproj", "{8B960223-E822-4386-9B85-B25F7EF2F6F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebShopModels", "WebShopModels\WebShopModels.csproj", "{8B960223-E822-4386-9B85-B25F7EF2F6F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

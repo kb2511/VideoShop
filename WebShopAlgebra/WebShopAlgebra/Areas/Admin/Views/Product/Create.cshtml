@@ -1,7 +1,7 @@
-﻿@model WebShopModels.Product
+﻿@model ProductVM
 
 @{
-    ViewData["Title"] = "Create Category";
+    ViewData["Title"] = "Create Product";
 }
 
 <form class="container" asp-action="Create">
@@ -12,49 +12,56 @@
             <hr />
         </div>
         <div class="form-group mb-3">
-            <label asp-for="Title" class="control-label"></label>
-            <input asp-for="Title" class="form-control" />
-            <span asp-validation-for="Title" class="text-danger"></span>
+            <label asp-for="Product.Title" class="control-label"></label>
+            <input asp-for="Product.Title" class="form-control" />
+            <span asp-validation-for="Product.Title" class="text-danger"></span>
         </div>
         <div class="form-group mb-3">
-            <label asp-for="Description" class="control-label"></label>
-            <textarea asp-for="Description" class="form-control"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
+            <label asp-for="Product.Description" class="control-label"></label>
+            <textarea asp-for="Product.Description" class="form-control"></textarea>
+            <span asp-validation-for="Product.Description" class="text-danger"></span>
         </div>
         <div class="form-group mb-3">
-            <label asp-for="Duration" class="control-label"></label>
-            <input asp-for="Duration" class="form-control" />
-            <span asp-validation-for="Duration" class="text-danger"></span>
+            <label asp-for="Product.Duration" class="control-label"></label>
+            <input asp-for="Product.Duration" class="form-control" />
+            <span asp-validation-for="Product.Duration" class="text-danger"></span>
         </div>
         <div class="form-group mb-3">
-            <label asp-for="YearOfRelease" class="control-label"></label>
-            <input asp-for="YearOfRelease" class="form-control" />
-            <span asp-validation-for="YearOfRelease" class="text-danger"></span>
+            <label asp-for="Product.YearOfRelease" class="control-label"></label>
+            <input asp-for="Product.YearOfRelease" class="form-control" />
+            <span asp-validation-for="Product.YearOfRelease" class="text-danger"></span>
         </div>
         <div class="form-group mb-3">
-            <label asp-for="ListPrice" class="control-label"></label>
-            <input asp-for="ListPrice" class="form-control" />
-            <span asp-validation-for="ListPrice" class="text-danger"></span>
+            <label asp-for="Product.ListPrice" class="control-label"></label>
+            <input asp-for="Product.ListPrice" class="form-control" />
+            <span asp-validation-for="Product.ListPrice" class="text-danger"></span>
         </div>
         <div class="form-group mb-3">
-            <label asp-for="Price" class="control-label"></label>
-            <input asp-for="Price" class="form-control" />
-            <span asp-validation-for="Price" class="text-danger"></span>
+            <label asp-for="Product.Price" class="control-label"></label>
+            <input asp-for="Product.Price" class="form-control" />
+            <span asp-validation-for="Product.Price" class="text-danger"></span>
         </div>
         <div class="form-group mb-3">
-            <label asp-for="PriceMoreThen3" class="control-label"></label>
-            <input asp-for="PriceMoreThen3" class="form-control" />
-            <span asp-validation-for="PriceMoreThen3" class="text-danger"></span>
+            <label asp-for="Product.PriceMoreThen3" class="control-label"></label>
+            <input asp-for="Product.PriceMoreThen3" class="form-control" />
+            <span asp-validation-for="Product.PriceMoreThen3" class="text-danger"></span>
         </div>
         <div class="form-group mb-3">
-            <label asp-for="PriceMoreThen10" class="control-label"></label>
-            <input asp-for="PriceMoreThen10" class="form-control" />
-            <span asp-validation-for="PriceMoreThen10" class="text-danger"></span>
+            <label asp-for="Product.PriceMoreThen10" class="control-label"></label>
+            <input asp-for="Product.PriceMoreThen10" class="form-control" />
+            <span asp-validation-for="Product.PriceMoreThen10" class="text-danger"></span>
         </div>
         <div class="form-group mb-3">
-            <label asp-for="CategoryId" class="control-label"></label>
-            <input asp-for="CategoryId" class="form-control" />
-            <span asp-validation-for="CategoryId" class="text-danger"></span>
+            <label asp-for="Product.CategoryId" class="control-label"></label>
+            <select asp-for="Product.CategoryId" asp-items="@Model.CategoryList" class="form-select border-0 shadow">
+                <option disabled selected>--Select Category--</option>
+            </select>
+            <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="Product.ImageUrl" class="control-label"></label>
+            <input asp-for="Product.ImageUrl" class="form-control" />
+            <span asp-validation-for="Product.ImageUrl" class="text-danger"></span>
         </div>
         <div class="form-group mb-3">
             <input type="submit" value="Create" class="btn btn-primary" style="width:150px" />
