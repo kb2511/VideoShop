@@ -34,7 +34,7 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
         }
 
         // GET: Admin/Product/Create
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Upsert(int? id)
         {
             var allCategories = await _categoryService.GetAll();
 
@@ -49,7 +49,16 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
                 Product = new Product()
             };
 
+            //for create
+            if (id == null || id == 0)
+            {
+                return View(productVM);
+            }
+            //else update
+
+            productVM.Product = await _productService.Get(p => p.Id == id);
             return View(productVM);
+            
         }
 
         // POST: Admin/Product/Create
@@ -57,7 +66,7 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Product,CategoryList")] ProductVM productVM)
+        public async Task<IActionResult> Upsert(ProductVM productVM, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -74,58 +83,6 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
                 Value = c.Id.ToString()
             });
             return View(productVM);
-        }
-
-        // GET: Admin/Product/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _productService.Get(c => c.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            return View(product);
-        }
-
-        // POST: Admin/Product/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Duration,YearOfRelease,ListPrice,Price,PriceMoreThen3,PriceMoreThen10,CategoryId")] Product product)
-        {
-            if (id != product.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    await _productService.Update(product);
-                    TempData["Success"] = "Product updated successfully!";
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    bool productExists = await ProductExists(product.Id);
-                    if (!productExists)
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(product);
         }
 
         // GET: Admin/Product/Delete/5

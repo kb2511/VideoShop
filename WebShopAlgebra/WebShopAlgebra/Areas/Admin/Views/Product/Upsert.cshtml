@@ -1,14 +1,22 @@
 ﻿@model ProductVM
 
 @{
-    ViewData["Title"] = "Create Product";
+    ViewData["Title"] = (Model.Product.Id != 0 ? "Update" : "Create") + " Product";
 }
 
-<form class="container" asp-action="Create">
+<form class="container" asp-action="Upsert" enctype="multipart/form-data">
+    <input asp-for="Product.Id" hidden />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="border p-3 mt-4">
         <div class="row pb-2">
-            <h2 class="text-primary">Create Category</h2>
+            @if(Model.Product.Id != 0)
+            {
+                <h2 class="text-primary">Update Product</h2>
+            }
+            else
+            {
+                <h2 class="text-primary">Create Product</h2>
+            }
             <hr />
         </div>
         <div class="form-group mb-3">
@@ -19,7 +27,6 @@
         <div class="form-group mb-3">
             <label asp-for="Product.Description" class="control-label"></label>
             <textarea asp-for="Product.Description" class="form-control"></textarea>
-            <span asp-validation-for="Product.Description" class="text-danger"></span>
         </div>
         <div class="form-group mb-3">
             <label asp-for="Product.Duration" class="control-label"></label>
@@ -53,24 +60,44 @@
         </div>
         <div class="form-group mb-3">
             <label asp-for="Product.CategoryId" class="control-label"></label>
-            <select asp-for="Product.CategoryId" asp-items="@Model.CategoryList" class="form-select border-0 shadow">
+            <select asp-for="Product.CategoryId" asp-items="@Model.CategoryList" class="form-select">
                 <option disabled selected>--Select Category--</option>
             </select>
             <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
         </div>
         <div class="form-group mb-3">
             <label asp-for="Product.ImageUrl" class="control-label"></label>
-            <input asp-for="Product.ImageUrl" class="form-control" />
-            <span asp-validation-for="Product.ImageUrl" class="text-danger"></span>
+            <input type="file" class="form-control" />
         </div>
         <div class="form-group mb-3">
-            <input type="submit" value="Create" class="btn btn-primary" style="width:150px" />
+            @if (Model.Product.Id != 0)
+            {
+                <input type="submit" value="Edit" class="btn btn-primary" style="width:150px" />
+            }
+            else
+            {
+                <input type="submit" value="Create" class="btn btn-primary" style="width:150px" />
+            }
             <a asp-controller="Product" asp-action="Index" class="btn btn-secondary" style="width:150px">Back to List</a>
         </div>
     </div>
 </form>
 
 @section Scripts {
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons lists table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+        });
+    </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
