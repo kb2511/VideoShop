@@ -18,11 +18,13 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductController(IProductService productService, ICategoryService categoryService)
+        public ProductController(IProductService productService, ICategoryService categoryService, IWebHostEnvironment webHostEnvironment)
         {
             _productService = productService;
             _categoryService = categoryService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Admin/Product
@@ -70,8 +72,42 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _productService.Create(productVM.Product);
-                TempData["Success"] = "Product created successfully!";
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string productPath = Path.Combine(wwwRootPath, @"images/product");
+
+                    if(!string.IsNullOrEmpty(productVM.Product.ImageUrl))
+                    {
+                        //delete old image
+                        var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('/'));
+
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+
+                    productVM.Product.ImageUrl = @"images/product/" + fileName;
+                }
+
+                if (productVM.Product.Id == 0)
+                {
+                    await _productService.Create(productVM.Product);
+                    TempData["Success"] = "Product created successfully!";
+                }
+                else
+                {
+                    await _productService.Update(productVM.Product);
+                    TempData["Success"] = "Product updated successfully!";
+                }
+                
                 return RedirectToAction(nameof(Index));
             }
 
