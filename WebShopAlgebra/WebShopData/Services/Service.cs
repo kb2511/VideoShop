@@ -14,6 +14,7 @@ namespace WebShopData.Services
             _context = context;
             this.contextSet = _context.Set<T>();
             //_context.Category == contextSet
+            //_context.Product.Include(u => u.Category).Include(u => u.CategoryId);
         }
         public async Task Create(T entity)
         {
@@ -27,14 +28,32 @@ namespace WebShopData.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<IEnumerable<T>> GetAll(string[]? includeProperties = null)
         {
-            return await contextSet.ToListAsync();
+            IQueryable<T> query = contextSet;
+
+            if (includeProperties?.Length != 0 && includeProperties != null)
+            {
+                foreach (var property in includeProperties.Where(p => p.Trim() != string.Empty))
+                {
+                    query = query.Include(property);
+                }
+            }
+            return await query.ToListAsync();
         }
 
-        public async Task<T> Get(Expression<Func<T, bool>> filter)
+        public async Task<T> Get(Expression<Func<T, bool>> filter, string[]? includeProperties = null)
         {
-            return await contextSet.FirstOrDefaultAsync(filter);
+            IQueryable<T> query = contextSet;
+
+            if (includeProperties?.Length != 0 && includeProperties != null)
+            {
+                foreach (var property in includeProperties.Where(p => p.Trim() != string.Empty))
+                {
+                    query = query.Include(property);
+                }
+            }
+            return await query.FirstOrDefaultAsync(filter);
         }
 
         public async Task RemoveRange(IEnumerable<T> entities)

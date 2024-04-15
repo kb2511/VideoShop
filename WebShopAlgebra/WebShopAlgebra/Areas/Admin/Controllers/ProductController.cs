@@ -30,7 +30,7 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
         // GET: Admin/Product
         public async Task<IActionResult> Index()
         {
-            var products = await _productService.GetAll();
+            var products = await _productService.GetAll(includeProperties: new string[] { "Category" });
 
             return View(products);
         }
@@ -99,6 +99,11 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
 
                 if (productVM.Product.Id == 0)
                 {
+                    if (string.IsNullOrEmpty(productVM.Product.ImageUrl))
+                    {
+                        productVM.Product.ImageUrl = string.Empty;
+                    }
+
                     await _productService.Create(productVM.Product);
                     TempData["Success"] = "Product created successfully!";
                 }
@@ -121,37 +126,6 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
             return View(productVM);
         }
 
-        // GET: Admin/Product/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _productService.Get(p => p.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
-        }
-
-        // POST: Admin/Product/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var product = await _productService.Get(p => p.Id == id);
-            if (product != null)
-            {
-                await _productService.Delete(product);
-            }
-
-            TempData["Success"] = "Product deleted successfully!";
-            return RedirectToAction(nameof(Index));
-        }
 
         private async Task<bool> ProductExists(int id)
         {
@@ -164,5 +138,36 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
 
             return false;
         }
+
+        #region API CALLS
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var products = await _productService.GetAll(includeProperties: new string[] {"Category"});
+            return Json(new { data = products.ToList() });
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            var productToBeDeleted = await _productService.Get(p => p.Id == id);
+            if (productToBeDeleted == null)
+            {
+                return Json(new { success = false, message = "Error while deleting" });
+            }
+
+            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.ImageUrl.TrimStart('/'));
+
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
+            }
+
+            await _productService.Delete(productToBeDeleted);
+
+            return Json(new { success = true, message = "Delete successful" });
+        }
+        #endregion
     }
 }
