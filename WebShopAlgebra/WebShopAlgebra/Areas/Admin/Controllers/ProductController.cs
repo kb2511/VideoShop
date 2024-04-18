@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +10,13 @@ using WebShopData.Data;
 using WebShopData.Interfaces;
 using WebShopData.Services;
 using WebShopModels;
+using WebShopModels.Utility;
 using WebShopModels.ViewModels;
 
 namespace WebShopAlgebra.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = Roles.Admin)]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
