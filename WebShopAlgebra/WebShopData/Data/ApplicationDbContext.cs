@@ -36,8 +36,8 @@ namespace WebShopData.Data
                     YearOfRelease = 1994,
                     ListPrice = 10,
                     Price = 9,
-                    PriceMoreThen3 = 8,
-                    PriceMoreThen10 = 7,
+                    PriceMoreThan3 = 8,
+                    PriceMoreThan10 = 7,
                     CategoryId = 1,
                     ImageUrl = ""
                 },
@@ -50,8 +50,8 @@ namespace WebShopData.Data
                     YearOfRelease = 1972,
                     ListPrice = 23,
                     Price = 20,
-                    PriceMoreThen3 = 18,
-                    PriceMoreThen10 = 16,
+                    PriceMoreThan3 = 18,
+                    PriceMoreThan10 = 16,
                     CategoryId = 1,
                     ImageUrl = ""
                 },
@@ -64,8 +64,8 @@ namespace WebShopData.Data
                     YearOfRelease = 2008,
                     ListPrice = 19,
                     Price = 15,
-                    PriceMoreThen3 = 13,
-                    PriceMoreThen10 = 11,
+                    PriceMoreThan3 = 13,
+                    PriceMoreThan10 = 11,
                     CategoryId = 2,
                     ImageUrl = ""
                 },
@@ -78,8 +78,8 @@ namespace WebShopData.Data
                     YearOfRelease = 1991,
                     ListPrice = 26,
                     Price = 25,
-                    PriceMoreThen3 = 20,
-                    PriceMoreThen10 = 18,
+                    PriceMoreThan3 = 20,
+                    PriceMoreThan10 = 18,
                     CategoryId = 2,
                     ImageUrl = ""
                 },
@@ -92,8 +92,8 @@ namespace WebShopData.Data
                     YearOfRelease = 2003,
                     ListPrice = 40,
                     Price = 35,
-                    PriceMoreThen3 = 30,
-                    PriceMoreThen10 = 25,
+                    PriceMoreThan3 = 30,
+                    PriceMoreThan10 = 25,
                     CategoryId = 3,
                     ImageUrl = ""
                 }

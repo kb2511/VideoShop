@@ -36,12 +36,12 @@ namespace WebShopModels
         [Required]
         [Display(Name = "Price For 4-10")]
         [Range(1, 1000)]
-        public double PriceMoreThen3 { get; set; }
+        public double PriceMoreThan3 { get; set; }
 
         [Required]
         [Display(Name = "Price For 10+")]
         [Range(1, 1000)]
-        public double PriceMoreThen10 { get; set; }
+        public double PriceMoreThan10 { get; set; }
  
         public int CategoryId { get; set; }
 

@@ -24,8 +24,8 @@ namespace WebShopData.Services
                 productDb.YearOfRelease = product.YearOfRelease;
                 productDb.ListPrice = product.ListPrice;
                 productDb.Price = product.Price;
-                productDb.PriceMoreThen3 = product.PriceMoreThen3;
-                productDb.PriceMoreThen10 = product.PriceMoreThen10;
+                productDb.PriceMoreThan3 = product.PriceMoreThan3;
+                productDb.PriceMoreThan10 = product.PriceMoreThan10;
                 productDb.CategoryId = product.CategoryId;
 
                 if(product.ImageUrl != null)

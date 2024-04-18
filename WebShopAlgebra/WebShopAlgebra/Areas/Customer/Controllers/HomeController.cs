@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using WebShopData.Interfaces;
 using WebShopModels;
 
 namespace WebShopAlgebra.Areas.Customer.Controllers
@@ -8,15 +9,26 @@ namespace WebShopAlgebra.Areas.Customer.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IProductService productService, ICategoryService categoryService)
         {
             _logger = logger;
+            _productService = productService;
+            _categoryService = categoryService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            IEnumerable<Product> productList = await _productService.GetAll(includeProperties: new string[] { "Category" }); ;
+            return View(productList);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            Product product = await _productService.Get(p => p.Id == id, includeProperties: new string[] { "Category" });
+            return View(product);
         }
 
         public IActionResult Privacy()
