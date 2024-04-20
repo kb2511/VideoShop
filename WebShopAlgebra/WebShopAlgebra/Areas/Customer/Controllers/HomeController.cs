@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using WebShopData.Interfaces;
 using WebShopModels;
+using WebShopModels.ViewModels;
 
 namespace WebShopAlgebra.Areas.Customer.Controllers
 {
@@ -19,9 +22,35 @@ namespace WebShopAlgebra.Areas.Customer.Controllers
             _categoryService = categoryService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? categoryId)
         {
+            ViewBag.CurrentCategory = "Filter by Category";
+
             IEnumerable<Product> productList = await _productService.GetAll(includeProperties: new string[] { "Category" }); ;
+
+            if (categoryId != null)
+            {
+                var productIds = productList
+                                .Where(p => p.CategoryId == categoryId)
+                                .Select(p => p.Id);
+
+                productList = productList.Where(p => productIds.Contains(p.Id)).ToList();
+
+                var currentCategory = await _categoryService.Get(c => c.Id == categoryId);
+
+                ViewBag.CurrentCategory = currentCategory?.Name;
+            }
+
+            var categories = await _categoryService.GetAll();
+
+            ViewBag.Categories = categories.Select(c =>
+            new SelectListItem()
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            });
+
+
             return View(productList);
         }
 

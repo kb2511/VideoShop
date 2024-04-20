@@ -5,6 +5,22 @@
 }
 
 <div class="container">
+    <div class="row mb-3">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @ViewBag.CurrentCategory
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                @foreach (var item in ViewBag.Categories)
+                {
+                    <a class="dropdown-item" asp-action="Index" asp-route-categoryId="@item.Value">@item.Text</a>
+                }
+            </div>
+        </div>
+        <div class="mt-2">
+            <a asp-action="Index" >Reset filters</a>
+        </div>
+    </div>
     <div class="row pb-3">
         @foreach (var product in Model)
         {
