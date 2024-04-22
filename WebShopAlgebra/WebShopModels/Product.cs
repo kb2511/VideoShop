@@ -50,6 +50,7 @@ namespace WebShopModels
         public Category Category { get; set; }
 
         [ValidateNever]
-        public string ImageUrl { get; set; } = "";
+        [Display(Name = "Product Images")]
+        public List<ProductImage> ProductImages { get; set; }
     }
 }

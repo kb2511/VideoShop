@@ -15,6 +15,7 @@ namespace WebShopData.Data
 
         public DbSet<Category> Category { get; set; }
         public DbSet<Product> Product { get; set; }
+        public DbSet<ProductImage> ProductImage { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,8 +40,7 @@ namespace WebShopData.Data
                     Price = 9,
                     PriceMoreThan3 = 8,
                     PriceMoreThan10 = 7,
-                    CategoryId = 1,
-                    ImageUrl = ""
+                    CategoryId = 1
                 },
                 new Product
                 {
@@ -53,8 +53,7 @@ namespace WebShopData.Data
                     Price = 20,
                     PriceMoreThan3 = 18,
                     PriceMoreThan10 = 16,
-                    CategoryId = 1,
-                    ImageUrl = ""
+                    CategoryId = 1
                 },
                 new Product
                 {
@@ -67,8 +66,7 @@ namespace WebShopData.Data
                     Price = 15,
                     PriceMoreThan3 = 13,
                     PriceMoreThan10 = 11,
-                    CategoryId = 2,
-                    ImageUrl = ""
+                    CategoryId = 2
                 },
                 new Product
                 {
@@ -81,8 +79,7 @@ namespace WebShopData.Data
                     Price = 25,
                     PriceMoreThan3 = 20,
                     PriceMoreThan10 = 18,
-                    CategoryId = 2,
-                    ImageUrl = ""
+                    CategoryId = 2
                 },
                 new Product
                 {
@@ -95,8 +92,7 @@ namespace WebShopData.Data
                     Price = 35,
                     PriceMoreThan3 = 30,
                     PriceMoreThan10 = 25,
-                    CategoryId = 3,
-                    ImageUrl = ""
+                    CategoryId = 3
                 }
                 );
         }

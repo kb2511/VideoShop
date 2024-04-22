@@ -27,11 +27,7 @@ namespace WebShopData.Services
                 productDb.PriceMoreThan3 = product.PriceMoreThan3;
                 productDb.PriceMoreThan10 = product.PriceMoreThan10;
                 productDb.CategoryId = product.CategoryId;
-
-                if(product.ImageUrl != null)
-                {
-                    productDb.ImageUrl = product.ImageUrl;
-                }
+                productDb.ProductImages = product.ProductImages;
             }
             await _context.SaveChangesAsync();
         }

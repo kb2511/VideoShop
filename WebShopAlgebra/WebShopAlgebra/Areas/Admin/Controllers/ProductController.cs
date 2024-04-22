@@ -21,19 +21,24 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        private readonly IProductImageService _productImageService;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductController(IProductService productService, ICategoryService categoryService, IWebHostEnvironment webHostEnvironment)
+        public ProductController(IProductService productService, 
+                                 ICategoryService categoryService, 
+                                 IProductImageService productImageService, 
+                                 IWebHostEnvironment webHostEnvironment)
         {
             _productService = productService;
             _categoryService = categoryService;
+            _productImageService = productImageService;
             _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Admin/Product
         public async Task<IActionResult> Index()
         {
-            var products = await _productService.GetAll(includeProperties: new string[] { "Category" });
+            var products = await _productService.GetAll(includeProperties: new string[] { "Category", "ProductImages" });
 
             return View(products);
         }
@@ -61,7 +66,7 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
             }
             //else update
 
-            productVM.Product = await _productService.Get(p => p.Id == id);
+            productVM.Product = await _productService.Get(p => p.Id == id, includeProperties: new string[] { "Category", "ProductImages" });
             return View(productVM);
             
         }
@@ -71,62 +76,74 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upsert(ProductVM productVM, IFormFile? file)
+        public async Task<IActionResult> Upsert(ProductVM productVM, List<IFormFile>? files)
         {
+
             if (ModelState.IsValid)
             {
-                string wwwRootPath = _webHostEnvironment.WebRootPath;
-                if (file != null)
-                {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    string productPath = Path.Combine(wwwRootPath, @"images/product");
-
-                    if(!string.IsNullOrEmpty(productVM.Product.ImageUrl))
-                    {
-                        //delete old image
-                        var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('/'));
-
-                        if (System.IO.File.Exists(oldImagePath))
-                        {
-                            System.IO.File.Delete(oldImagePath);
-                        }
-                    }
-
-                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-                    }
-
-                    productVM.Product.ImageUrl = @"images/product/" + fileName;
-                }
-
                 if (productVM.Product.Id == 0)
                 {
-                    if (string.IsNullOrEmpty(productVM.Product.ImageUrl))
-                    {
-                        productVM.Product.ImageUrl = string.Empty;
-                    }
-
                     await _productService.Create(productVM.Product);
-                    TempData["Success"] = "Product created successfully!";
+                    TempData["Success"] = "Product created successfully";
                 }
                 else
                 {
                     await _productService.Update(productVM.Product);
-                    TempData["Success"] = "Product updated successfully!";
+                    TempData["Success"] = "Product updated successfully";
                 }
-                
-                return RedirectToAction(nameof(Index));
-            }
 
-            var allCategories = await _categoryService.GetAll();
-            productVM.CategoryList = allCategories.Select(c => 
-            new SelectListItem()
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if (files != null)
+                {
+
+                    foreach (IFormFile file in files)
+                    {
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        string productPath = @"images/products/product-" + productVM.Product.Id;
+                        string finalPath = Path.Combine(wwwRootPath, productPath);
+
+                        if (!Directory.Exists(finalPath))
+                        {
+                            Directory.CreateDirectory(finalPath);
+                        }                            
+
+                        using (var fileStream = new FileStream(Path.Combine(finalPath, fileName), FileMode.Create))
+                        {
+                            file.CopyTo(fileStream);
+                        }
+
+                        ProductImage productImage = new ProductImage()
+                        {
+                            ImageUrl = @"/" + productPath + @"/" + fileName,
+                            ProductId = productVM.Product.Id,
+                        };
+
+                        if (productVM.Product.ProductImages == null)
+                        {
+                            productVM.Product.ProductImages = new List<ProductImage>();
+                        }
+                          
+                        productVM.Product.ProductImages.Add(productImage);
+
+                    }
+
+                    await _productService.Update(productVM.Product);
+
+                }
+
+                return RedirectToAction("Index");
+            }
+            else
             {
-                Text = c.Name,
-                Value = c.Id.ToString()
-            });
-            return View(productVM);
+                var categories = await _productService.GetAll();    
+                productVM.CategoryList = categories.Select(u => new SelectListItem
+                {
+                    Text = u.Title,
+                    Value = u.Id.ToString()
+                });
+
+                return View(productVM);
+            }
         }
 
 
@@ -141,6 +158,31 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
 
             return false;
         }
+
+        public async Task<IActionResult> DeleteImage(int imageId)
+        {
+            var imageToBeDeleted = await _productImageService.Get(u => u.Id == imageId);
+            int productId = imageToBeDeleted.ProductId;
+            if (imageToBeDeleted != null)
+            {
+                if (!string.IsNullOrEmpty(imageToBeDeleted.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, imageToBeDeleted.ImageUrl.TrimStart('/'));
+
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                await _productImageService.Delete(imageToBeDeleted);
+
+                TempData["success"] = "Deleted successfully";
+            }
+
+            return RedirectToAction(nameof(Upsert), new { id = productId });
+        }
+
 
         #region API CALLS
 
@@ -160,11 +202,18 @@ namespace WebShopAlgebra.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Error while deleting" });
             }
 
-            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.ImageUrl.TrimStart('/'));
+            string productPath = @"images/products/product-" + id;
+            string finalPath = Path.Combine(_webHostEnvironment.WebRootPath, productPath);
 
-            if (System.IO.File.Exists(oldImagePath))
+            if (Directory.Exists(finalPath))
             {
-                System.IO.File.Delete(oldImagePath);
+                string[] filePaths = Directory.GetFiles(finalPath);
+                foreach (string filePath in filePaths)
+                {
+                    System.IO.File.Delete(filePath);
+                }
+
+                Directory.Delete(finalPath);
             }
 
             await _productService.Delete(productToBeDeleted);

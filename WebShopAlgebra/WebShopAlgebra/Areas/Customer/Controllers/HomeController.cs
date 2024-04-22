@@ -26,7 +26,7 @@ namespace WebShopAlgebra.Areas.Customer.Controllers
         {
             ViewBag.CurrentCategory = "Filter by Category";
 
-            IEnumerable<Product> productList = await _productService.GetAll(includeProperties: new string[] { "Category" }); ;
+            IEnumerable<Product> productList = await _productService.GetAll(includeProperties: new string[] { "Category", "ProductImages" });
 
             if (categoryId != null)
             {
@@ -56,7 +56,7 @@ namespace WebShopAlgebra.Areas.Customer.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            Product product = await _productService.Get(p => p.Id == id, includeProperties: new string[] { "Category" });
+            Product product = await _productService.Get(p => p.Id == id, includeProperties: new string[] { "Category", "ProductImages" });
             return View(product);
         }
 
