@@ -14,7 +14,7 @@ using WebShopModels.Utility;
 namespace VideoShopWebApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = StaticData.Admin)]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;

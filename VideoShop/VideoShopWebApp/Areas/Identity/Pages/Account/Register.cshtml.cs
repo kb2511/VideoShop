@@ -112,12 +112,12 @@ namespace VideoShopWebApp.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if(!_roleManager.RoleExistsAsync(Roles.Customer).GetAwaiter().GetResult())
+            if(!_roleManager.RoleExistsAsync(StaticData.Customer).GetAwaiter().GetResult())
             {
-                _roleManager.CreateAsync(new IdentityRole(Roles.Customer)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(Roles.Company)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(Roles.Admin)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(Roles.Employee)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(StaticData.Customer)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(StaticData.Company)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(StaticData.Admin)).GetAwaiter().GetResult();
+                _roleManager.CreateAsync(new IdentityRole(StaticData.Employee)).GetAwaiter().GetResult();
             }
 
             Input = new()
@@ -154,7 +154,7 @@ namespace VideoShopWebApp.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _userManager.AddToRoleAsync(user, Roles.Customer);
+                        await _userManager.AddToRoleAsync(user, StaticData.Customer);
                     }
 
                     var userId = await _userManager.GetUserIdAsync(user);

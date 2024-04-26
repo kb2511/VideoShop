@@ -28,9 +28,14 @@ namespace WebShopData.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAll(string[]? includeProperties = null)
+        public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? filter = null, string[]? includeProperties = null)
         {
             IQueryable<T> query = contextSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
 
             if (includeProperties?.Length != 0 && includeProperties != null)
             {

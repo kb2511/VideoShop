@@ -16,7 +16,7 @@ using WebShopModels.ViewModels;
 namespace VideoShopWebApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = Roles.Admin)]
+    [Authorize(Roles = StaticData.Admin)]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
