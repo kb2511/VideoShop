@@ -1,0 +1,147 @@
+﻿@model ShoppingCartVM
+
+<div class="container">
+    <form method="post">
+		<div class="card shadow border-0">
+			<div class="card-header bg-secondary bg-gradient text-light ml-0 py-4">
+				<div class="row px-4">
+					<div class="col-6">
+						<h5 class="pt-2 text-white">
+							Order Summary
+						</h5>
+					</div>
+					<div class="col-6 text-end">
+						<a asp-action="Index" class="btn btn-outline-light btn-sm">Back to Cart</a>
+					</div>
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="container rounded p-2">
+					<div class="row">
+						<div class="col-12 col-lg-6 pb-4">
+							<div class="row">
+								<h4 class="d-flex justify-content-between align-items-center mb-3">
+									<span class="text-info">Shipping Details:</span>
+								</h4>
+							</div>
+							<input type="hidden" asp-for="Order.Total" value="@Model.Order.Total.ToString("0.00")" />
+							<input type="hidden" asp-for="Order.UserId" value="@Model.Order.User.Id" />
+							<input type="hidden" asp-for="Order.Status" value="@Model.Order.Status" />
+							<div class="row my-1">
+								<div class="col-3">
+									<label>First Name</label>
+								</div>
+								<div class="col-9">
+									<input asp-for="Order.BillingFirstName" class="form-control" />
+									<span asp-validation-for="Order.BillingFirstName" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">
+									<label>Last Name</label>
+								</div>
+								<div class="col-9">
+									<input asp-for="Order.BillingLastName" class="form-control" />
+									<span asp-validation-for="Order.BillingLastName" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">
+									<label>Phone</label>
+								</div>
+								<div class="col-9">
+									<input asp-for="Order.BillingPhone" class="form-control" />
+									<span asp-validation-for="Order.BillingPhone" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">
+									<label>Email</label>
+								</div>
+								<div class="col-9">
+									<input asp-for="Order.BillingEmail" class="form-control" />
+									<span asp-validation-for="Order.BillingEmail" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">
+									<label>Street Address</label>
+								</div>
+								<div class="col-9">
+									<input asp-for="Order.BillingAddress" class="form-control" />
+									<span asp-validation-for="Order.BillingAddress" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">
+									<label>Country</label>
+								</div>
+								<div class="col-9">
+									<select asp-for="Order.BillingCountry" id="BillingCountry" class="form-control">
+										<option value="Croatia">Croatia</option>
+										<option value="Slovenia">Slovenia</option>
+										<option value="Serbia">Serbia</option>
+										<option value="BIH">BIH</option>
+										<option value="Hungary">Hungary</option>
+									</select>
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">
+									<label>Zip Code</label>
+								</div>
+								<div class="col-9">
+									<input asp-for="Order.BillingZipCode" class="form-control" />
+									<span asp-validation-for="Order.BillingZipCode" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="row my-1">
+								<div class="col-3">
+									<label>Message</label>
+								</div>
+								<div class="col-9">
+									<textarea class="form-control" asp-for="Order.Message" id="Message" rows="3"></textarea>
+								</div>
+							</div>
+						</div>
+						<div class="col-12 col-lg-5 offset-lg-1">
+							<h4 class="d-flex justify-content-between align-items-center mb-3">
+								<span class="text-info">Order Summary:</span>
+							</h4>
+							<ul class="list-group mb-3">
+								@foreach (var details in Model.CartItems)
+								{
+									<li class="list-group-item d-flex justify-content-between">
+										<div>
+											<h6 class="my-0">@details.Product.Title</h6>
+											<small class="text-muted">Quantity: @details.Count</small>
+										</div>
+										<span class="text-muted">@((details.Price * details.Count).ToString("c")) </span>
+									</li>
+								}
+
+								<li class="list-group-item d-flex justify-content-between bg-light">
+									<small class="text-info">Total (USD)</small>
+									<strong class="text-info">@Model.Order.Total.ToString("c")</strong>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card-footer">
+				<div class="row">
+					<div class="col-12 col-md-8 pt-2">
+						<p style="color:maroon; font-size:14px;">
+							Estimate Arrival Date:
+							@DateTime.Now.AddDays(7).ToShortDateString() - @DateTime.Now.AddDays(14).ToShortDateString()
+						</p>
+					</div>
+					<div class="col-12 col-md-4">
+						<button type="submit" value="Place Order" class="btn btn-primary form-control">Place Order</button>
+					</div>
+				</div>
+			</div>
+		</div>
+    </form>
+</div>

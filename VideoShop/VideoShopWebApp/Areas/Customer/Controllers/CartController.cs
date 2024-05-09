@@ -6,6 +6,9 @@ using WebShopModels;
 using System.Security.Claims;
 using WebShopModels.Utility;
 using WebShopModels.ViewModels;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
+using Microsoft.AspNetCore.Identity;
 
 namespace VideoShopWebApp.Areas.Customer.Controllers
 {
@@ -15,13 +18,20 @@ namespace VideoShopWebApp.Areas.Customer.Controllers
     {
         private readonly IShoppingCartService _shoppingCartService;
         private readonly IProductImageService _productImageService;
+        private readonly IOrderService _orderService;
         private readonly IEmailSender _emailSender;
+		private readonly UserManager<IdentityUser> _userManager;
+		[BindProperty]
+        public ShoppingCartVM ShoppingCartVM { get; set; }
 
-        public CartController(IShoppingCartService shoppingCartService, IProductImageService productImageService, IEmailSender emailSender)
+        public CartController(IShoppingCartService shoppingCartService, IProductImageService productImageService, IOrderService orderService, IEmailSender emailSender, UserManager<IdentityUser> userManager)
         {
             _shoppingCartService = shoppingCartService;
             _productImageService = productImageService;
+            _orderService = orderService;
             _emailSender = emailSender;
+            _userManager = userManager;
+
         }
         public async Task<IActionResult> Index()
         {
@@ -38,14 +48,99 @@ namespace VideoShopWebApp.Areas.Customer.Controllers
                 cart.Price = GetPriceBasedOnQuantity(cart);
             }
 
-            ShoppingCartVM shoppingCartVM = new()
+            ShoppingCartVM = new()
             {
                 CartItems = shoppingCarts,
-                OrderTotal = GetOrderTotal(shoppingCarts)
+                Order = new()
+                {
+                    Total = GetOrderTotal(shoppingCarts)
+                }
             };
 
-            return View(shoppingCartVM);
+            return View(ShoppingCartVM);
         }
+
+		public async Task<IActionResult> Order()
+		{
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+			ShoppingCartVM = new()
+			{
+				CartItems = await _shoppingCartService.GetAll(c => c.UserId == userId,
+				                        includeProperties: new string[] { "Product" }),
+				Order = new()
+			};
+
+			foreach (var cart in ShoppingCartVM.CartItems)
+			{
+				cart.Price = GetPriceBasedOnQuantity(cart);
+			}
+
+			ShoppingCartVM.Order.User = await _userManager.FindByIdAsync(userId);
+			ShoppingCartVM.Order.BillingEmail = ShoppingCartVM.Order.User.Email;
+			ShoppingCartVM.Order.BillingPhone = ShoppingCartVM.Order.User.PhoneNumber;
+            ShoppingCartVM.Order.Status = StaticData.StatusPending;
+
+            ShoppingCartVM.Order.Total = GetOrderTotal(ShoppingCartVM.CartItems);
+
+			return View(ShoppingCartVM);
+		}
+
+		[HttpPost]
+		[ActionName("Order")]
+		public async Task<IActionResult> CreateOrder()
+		{
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+			ShoppingCartVM.CartItems = await _shoppingCartService.GetAll(u => u.UserId == userId, includeProperties: new string[] { "Product" });
+
+			if (ShoppingCartVM.CartItems.Count() == 0)
+			{
+				RedirectToAction(nameof(Index));
+			}
+
+			ShoppingCartVM.Order.DateCreated = DateTime.Now;
+
+			foreach (var cartItem in ShoppingCartVM.CartItems)
+			{
+				OrderProduct orderProduct = new OrderProduct()
+				{
+					OrderId = ShoppingCartVM.Order.Id,
+					ProductId = cartItem.ProductId,
+					Quantity = cartItem.Count,
+					Price = (decimal)GetPriceBasedOnQuantity(cartItem)
+				};
+
+                orderProduct.Total = orderProduct.Quantity * orderProduct.Price;
+
+				ShoppingCartVM.Order.OrderProducts.Add(orderProduct);
+			}
+
+			if (ModelState.IsValid)
+			{
+				await _orderService.Create(ShoppingCartVM.Order);
+			}
+
+            HttpContext.Session.SetInt32(StaticData.SessionCart, 0);
+
+            return RedirectToAction(nameof(OrderConfirmation), new { id=ShoppingCartVM.Order.Id});
+
+		}
+
+		public async Task<IActionResult> OrderConfirmation(int id)
+		{
+
+			Order order = await _orderService.Get(u => u.Id == id, includeProperties: new string[] { "User" });
+
+			List<ShoppingCart> shoppingCarts = (await _shoppingCartService.GetAll(u => u.UserId == order.UserId)).ToList();
+
+			await _shoppingCartService.RemoveRange(shoppingCarts);
+
+            return View(id);
+        }
+
 
         public async Task<IActionResult> AddOne(int? cartId)
         {

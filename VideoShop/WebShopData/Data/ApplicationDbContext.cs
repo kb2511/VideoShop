@@ -18,7 +18,7 @@ namespace WebShopData.Data
         public DbSet<ProductImage> ProductImage { get; set; }
         public DbSet<ShoppingCart> ShoppingCart { get; set; }
         public DbSet<Order> Order { get; set; }
-        public DbSet<OrderProduct> OrderProducts { get; set; }
+        public DbSet<OrderProduct> OrderProduct { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
